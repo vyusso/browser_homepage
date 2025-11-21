@@ -31,7 +31,7 @@ body.terminal-body {
   background-color: #000000;
   color: #eeeeee;
   font-family: "VT323", "Courier New", Courier, monospace;
-  font-size: clamp(1.2rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.95rem, 1.15vw, 1.15rem);
   line-height: 1.4;
   letter-spacing: 0.05em;
 }
@@ -66,7 +66,7 @@ body.terminal-body {
   background-color: #000000;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: clamp(1.1rem, 1.4vw, 1.45rem);
+  font-size: clamp(0.85rem, 1.05vw, 1.1rem);
 }
 
 .terminal-header-left,
@@ -106,7 +106,7 @@ body.terminal-body {
 
 .terminal-footer {
   margin-top: 0.4rem;
-  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+  font-size: clamp(0.75rem, 0.85vw, 0.9rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: center;
@@ -213,7 +213,7 @@ body.terminal-body {
 
 .panel-title {
   margin: 0;
-  font-size: clamp(1.1rem, 1.4vw, 1.45rem);
+  font-size: clamp(0.85rem, 1.05vw, 1.1rem);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -277,7 +277,7 @@ body.terminal-body {
   justify-content: space-between;
   align-items: baseline;
   gap: 0.25rem;
-  font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+  font-size: clamp(0.7rem, 0.85vw, 0.85rem);
 }
 
 .hardware-label {
@@ -313,7 +313,7 @@ body.terminal-body {
 
 .hardware-footnote {
   margin: 0.25rem 0 0;
-  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+  font-size: clamp(0.75rem, 0.85vw, 0.9rem);
   opacity: 0.45;
 }
 
@@ -353,7 +353,7 @@ body.terminal-body {
   background-color: #ff6b35;
   color: #000000;
   padding: 0.25rem 0.65rem;
-  font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+  font-size: clamp(0.82rem, 1rem, 1.05rem);
   text-transform: uppercase;
   letter-spacing: 0.16em;
   cursor: pointer;
@@ -386,7 +386,7 @@ body.terminal-body {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+  font-size: clamp(0.82rem, 1rem, 1.05rem);
 }
 
 .media-container {

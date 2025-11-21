@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    * {
+      cursor: url(cursors/cursor.svg) 2 2, auto !important;
+      font-family: 'VT323', 'Courier New', Courier, monospace !important;
+    }
+
+    button, .clickable, .clickable *, .search-button {
+      cursor: url(cursors/pointer.svg) 2 2, pointer !important;
+    }
+
+    input[type="text"], input[type="search"], input.search-input, textarea {
+      cursor: url(cursors/text-cursor.svg) 1 10, text !important;
+    }
+
+    body.terminal-body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: #000000;
+      color: #eeeeee;
+      font-family: 'VT323', 'Courier New', Courier, monospace !important;
+      font-size: clamp(1.2rem, 1.5vw, 1.5rem) !important;
+      line-height: 1.4;
+      letter-spacing: 0.05em;
+    }
+
+    .terminal-root {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      padding: 0.9rem;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .terminal-frame {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ff6b35;
+      background: #000;
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0.6rem;
+      background-color: #000;
+      border-bottom: 1px solid #ff6b35;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: clamp(1.1rem, 1.4vw, 1.45rem) !important;
+    }
+
+    .terminal-header-left, .terminal-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .terminal-status-dot {
+      width: 0.6rem;
+      height: 0.6rem;
+      background-color: #ff6b35;
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(255, 107, 53, 0.9);
+    }
+
+    .terminal-header-label {
+      opacity: 0.9;
+    }
+
+    .terminal-status-text {
+      background-color: #ff6b35;
+      color: #000;
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+    }
+
+    .terminal-content {
+      flex: 1;
+      min-height: 0;
+      padding: 0.35rem 0.45rem;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .terminal-footer {
+      text-align: center;
+      margin-top: 0.4rem;
+      color: #ff6b35;
+      opacity: 0.8;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: clamp(0.95rem, 1.1vw, 1.15rem) !important;
+    }
+
+    .terminal-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 0.5rem;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .terminal-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .terminal-column:first-child {
+      justify-content: space-between;
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      padding: 0.45rem 0.55rem;
+      background-color: rgba(0, 0, 0, 0.9);
+      border: 1px solid #ff6b35;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel-primary, .panel-secondary {
+      flex: none;
+    }
+
+    .mainimage-panel {
+      flex: 1;
+    }
+
+    .panel-title {
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: clamp(1.1rem, 1.4vw, 1.45rem) !important;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.35rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .search-prompt {
+      color: #ff6b35;
+    }
+
+    .search-input {
+      flex: 1;
+      background-color: #000;
+      border: none;
+      border-bottom: 1px solid #ff6b35;
+      color: #eee;
+      padding: 0.25rem 0.2rem;
+      font: inherit;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: rgba(238, 238, 238, 0.4);
+    }
+
+    .search-input:focus {
+      box-shadow: 0 2px rgba(255, 107, 53, 0.9);
+    }
+
+    .search-button {
+      background-color: #ff6b35;
+      border: 1px solid #ff6b35;
+      color: #000;
+      padding: 0.25rem 0.65rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: clamp(1.05rem, 1.3vw, 1.35rem) !important;
+    }
+
+    .search-button:hover {
+      background-color: #ff8a5a;
+    }
+
+    .log-wrapper {
+      display: flex;
+      gap: 0.5rem;
+      flex: none;
+    }
+
+    .log-panel {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .media-panel {
+      flex: none;
+      width: 140px;
+    }
+
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      list-style: none;
+      margin: 0.2rem 0 0;
+      padding: 0;
+      font-size: clamp(1.05rem, 1.3vw, 1.35rem) !important;
+    }
+
+    .log-line {
+      white-space: pre-wrap;
+    }
+
+    .log-highlight {
+      color: #ff6b35;
+    }
+
+    .media-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0.3rem;
+      min-height: 90px;
+    }
+
+    .media-image {
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .secondaryimage-panel {
+    }
+
+    .secondaryimage-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background-color: #05050a;
+      border: 1px solid #ff6b35;
+    }
+
+    .secondaryimage-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .mainimage-container {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background-color: #05050a;
+      border: 1px solid #ff6b35;
+    }
+
+    .mainimage-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .hardware-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.25rem 0.45rem;
+      margin-top: 0.25rem;
+    }
+
+    .hardware-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.08rem;
+    }
+
+    .hardware-meta {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.25rem;
+      font-size: clamp(0.9rem, 1.1vw, 1.1rem) !important;
+    }
+
+    .hardware-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .hardware-chart-shell {
+      background-color: #05050a;
+      background-image: 
+        linear-gradient(90deg, rgba(255, 107, 53, 0.16) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 107, 53, 0.12) 1px, transparent 1px);
+      background-size: 7px 100%, 100% 7px;
+      border: 1px solid #ff6b35;
+      padding: 0.02rem 0.1rem;
+      min-height: 20px;
+    }
+
+    .hardware-chart {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    @media (max-width: 840px) {
+      .terminal-root {
+        height: auto;
+        min-height: 100vh;
+        padding: 0.75rem;
+      }
+      
+      .terminal-frame {
+        flex: none;
+        overflow-y: auto;
+      }
+      
+      .terminal-content {
+        overflow: visible;
+      }
+      
+      .terminal-grid {
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
+      
+      .terminal-column {
+        max-width: none;
+        min-height: auto;
+        overflow: visible;
+      }
+      
+      .terminal-column:first-child {
+        justify-content: flex-start;
+      }
+      
+      .mainimage-panel {
+        flex: none;
+        min-height: 300px;
+      }
+      
+      .mainimage-container {
+        min-height: 300px;
+      }
+      
+      .mainimage-img, .secondaryimage-img {
+        object-fit: contain;
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body class="terminal-body">
+  <main class="terminal-root">
+    <section class="terminal-frame">
+      <header class="terminal-header">
+        <div class="terminal-header-left">
+          <span class="terminal-status-dot"></span>
+          <span class="terminal-header-label">HOMEPAGE V1.0</span>
+        </div>
+        <div class="terminal-header-right">
+          <span class="terminal-status-text">GUHA: ONLINE</span>
+        </div>
+      </header>
+
+      <div class="terminal-content">
+        <div class="terminal-grid">
+          <div class="terminal-column">
+            <section class="panel panel-primary">
+              <h1 class="panel-title">> NET SURF</h1>
+              <form class="search-form" onsubmit="handleSearch(event)">
+                <span class="search-prompt">></span>
+                <input 
+                  autofocus 
+                  class="search-input" 
+                  placeholder="type to search the net..." 
+                  id="searchInput"
+                />
+                <button class="search-button" type="submit">SEARCH</button>
+              </form>
+            </section>
+
+            <div class="log-wrapper">
+              <section class="panel panel-secondary log-panel">
+                <h2 class="panel-title">> SYSTEM LOG</h2>
+                <ul class="log-list">
+                  <li class="log-line">> JUST AS NO ONE HAS EVER RIDDEN A <span class="log-highlight">RAINBOW</span>.</li>
+                  <li class="log-line">> NO ONE WILL EVER BE <span class="log-highlight">PERFECT</span> EITHER...</li>
+                  <li class="log-line">> EVERYONE TAKES THAT FACT AS <span class="log-highlight">GOSPEL</span>.</li>
+                  <li class="log-line">> THAT IS EXACTLY WHY <span class="log-highlight">HUMANS</span> CAN NEVER ACHIEVE IT.</li>
+                </ul>
+              </section>
+
+              <section class="panel panel-secondary media-panel">
+                <h2 class="panel-title">> media</h2>
+                <div class="media-container">
+                  <img 
+                    src="baku/kirumasouichi_orange.gif" 
+                    alt="animated gif" 
+                    class="media-image"
+                  />
+                </div>
+              </section>
+            </div>
+
+            <section class="panel secondaryimage-panel">
+              <h2 class="panel-title">> I haven't lost anything yet.</h2>
+              <div class="secondaryimage-container">
+                <img 
+                  src="baku/baku3.jpg" 
+                  alt="secondary image" 
+                  class="secondaryimage-img"
+                />
+              </div>
+            </section>
+
+            <section class="panel panel-secondary">
+              <h2 class="panel-title">> runtime vitals</h2>
+              <div class="hardware-grid" id="hardwareGrid">
+                <!-- Hardware metrics will be inserted here by JavaScript -->
+              </div>
+            </section>
+          </div>
+
+          <div class="terminal-column">
+            <section class="panel mainimage-panel">
+              <h2 class="panel-title">> You are a big liar aren't you?</h2>
+              <div class="mainimage-container">
+                <img 
+                  src="baku/baku1.png" 
+                  alt="main image" 
+                  class="mainimage-img"
+                />
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="terminal-footer">DON'T LOOK BACK.</footer>
+  </main>
+
+  <script>
+    // search functionality
+    function handleSearch(event) {
+      event.preventDefault();
+      const input = document.getElementById('searchInput');
+      const query = input.value.trim();
+      
+      if (!query) return;
+
+      // check if it looks like a url
+      const isUrl = query.includes('.') && 
+                    !query.includes(' ') && 
+                    (query.match(/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/) || 
+                     query.startsWith('http://') || 
+                     query.startsWith('https://'));
+
+      let url;
+      if (isUrl) {
+        url = query.startsWith('http') ? query : `https://${query}`;
+      } else {
+        url = `https://google.com/search?q=${encodeURIComponent(query)}`;
+      }
+
+      window.open(url, '_self');
+    }
+
+    // hardware metrics simulation
+    const metrics = {
+      cpu: { label: 'CPU', values: [], format: v => `${Math.round(v)}%`, min: 0, max: 100 },
+      gpu: { label: 'GPU', values: [], format: v => `${Math.round(v)}%`, min: 0, max: 100 },
+      mem: { label: 'MEM', values: [], format: v => `${Math.round(v)}%`, min: 0, max: 100 },
+      temp: { label: 'CPU TEMP', values: [], format: v => `${Math.round(v)}°c`, min: 30, max: 85 }
+    };
+
+    // initialize with random values
+    Object.keys(metrics).forEach(key => {
+      const metric = metrics[key];
+      for (let i = 0; i < 28; i++) {
+        metric.values.push(Math.random() * (metric.max - metric.min) + metric.min);
+      }
+    });
+
+    function nextValue(previous, min, max) {
+      const jumpChance = Math.random();
+      const volatility = jumpChance < 0.2 ? 0.45 : 0.22;
+      let value = previous + (Math.random() - 0.5) * (max - min) * volatility;
+      value = Math.max(min, Math.min(max, value));
+      return value;
+    }
+
+    function generateSparkline(values, min, max) {
+      const width = 80;
+      const height = 20;
+      const points = values.map((val, idx) => {
+        const x = (idx / (values.length - 1)) * width;
+        const y = height - ((val - min) / (max - min)) * height;
+        return `${x},${y}`;
+      }).join(' ');
+
+      const fillPoints = `${points} ${width},${height} 0,${height}`;
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+          <polyline points="${fillPoints}" 
+            style="stroke:none;fill:rgba(255,107,53,0.16);"/>
+          <polyline points="${points}" 
+            style="stroke:#ff6b35;stroke-width:0.5;fill:none;stroke-linejoin:miter;stroke-linecap:butt;"/>
+        </svg>
+      `;
+    }
+
+    function updateHardware() {
+      const grid = document.getElementById('hardwareGrid');
+      let html = '';
+
+      Object.keys(metrics).forEach(key => {
+        const metric = metrics[key];
+        const latest = metric.values[metric.values.length - 1];
+        
+        html += `
+          <div class="hardware-row">
+            <div class="hardware-meta">
+              <span class="hardware-label">${metric.label.toUpperCase()} - ${metric.format(latest)}</span>
+            </div>
+            <div class="hardware-chart-shell">
+              <div class="hardware-chart">
+                ${generateSparkline(metric.values, metric.min, metric.max)}
+              </div>
+            </div>
+          </div>
+        `;
+
+        // update values
+        metric.values.shift();
+        metric.values.push(nextValue(latest, metric.min, metric.max));
+      });
+
+      grid.innerHTML = html;
+    }
+
+    // initial render
+    updateHardware();
+
+    // update every 500ms
+    setInterval(updateHardware, 500);
+  </script>
+</body>
+</html>
+
