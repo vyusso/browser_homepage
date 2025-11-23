@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 type TerminalLayoutProps = {
@@ -6,9 +9,20 @@ type TerminalLayoutProps = {
 
 // main layout wrapper with header and footer
 export function TerminalLayout({ children }: TerminalLayoutProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    // trigger expand animation after mount
+    const timeout = setTimeout(() => {
+      setExpanded(true);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <main className="terminal-root">
-      <section className="terminal-frame">
+      <section className={`terminal-frame ${expanded ? "expanded" : ""}`}>
         <header className="terminal-header">
           <div className="terminal-header-left">
             <span className="terminal-status-dot" />
