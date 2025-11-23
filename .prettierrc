@@ -1,0 +1,12 @@
+{
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "htmlWhitespaceSensitivity": "strict",
+        "printWidth": 1000
+      }
+    }
+  ]
+}
+
